@@ -49,8 +49,12 @@ namespace Lab2MPA.Controllers
         // GET: Books/Create
         public IActionResult Create()
         {
-            ViewData["AuthorID"] = new SelectList(_context.Author, "ID", "ID");
-            ViewData["GenreID"] = new SelectList(_context.Genre, "ID", "ID");
+            ViewData["AuthorID"] = new SelectList(_context.Author.Select(a => new
+            {
+                ID = a.ID,
+                FullName = a.FirstName + " " + a.LastName
+            }), "ID", "FullName");
+            ViewData["GenreID"] = new SelectList(_context.Genre, "ID", "Name");
             return View();
         }
 
@@ -67,8 +71,8 @@ namespace Lab2MPA.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AuthorID"] = new SelectList(_context.Author, "ID", "ID", book.AuthorID);
-            ViewData["GenreID"] = new SelectList(_context.Genre, "ID", "ID", book.GenreID);
+            ViewData["AuthorID"] = new SelectList(_context.Author, "ID", "FirstName", book.AuthorID);
+            ViewData["GenreID"] = new SelectList(_context.Genre, "ID", "Name", book.GenreID);
             return View(book);
         }
 
@@ -85,8 +89,12 @@ namespace Lab2MPA.Controllers
             {
                 return NotFound();
             }
-            ViewData["AuthorID"] = new SelectList(_context.Author, "ID", "ID", book.AuthorID);
-            ViewData["GenreID"] = new SelectList(_context.Genre, "ID", "ID", book.GenreID);
+            ViewData["AuthorID"] = new SelectList(_context.Author.Select(a => new
+            {
+                ID = a.ID,
+                FullName = a.FirstName + " " + a.LastName
+            }), "ID", "FullName", book.AuthorID);
+            ViewData["GenreID"] = new SelectList(_context.Genre, "ID", "Name", book.GenreID);
             return View(book);
         }
 
@@ -122,8 +130,12 @@ namespace Lab2MPA.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AuthorID"] = new SelectList(_context.Author, "ID", "ID", book.AuthorID);
-            ViewData["GenreID"] = new SelectList(_context.Genre, "ID", "ID", book.GenreID);
+            ViewData["AuthorID"] = new SelectList(_context.Author.Select(a => new
+            {
+                ID = a.ID,
+                FullName = a.FirstName + " " + a.LastName
+            }), "ID", "FullName", book.AuthorID);
+            ViewData["GenreID"] = new SelectList(_context.Genre, "ID", "Name", book.GenreID);
             return View(book);
         }
 
