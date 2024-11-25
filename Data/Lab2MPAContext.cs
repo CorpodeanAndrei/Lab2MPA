@@ -17,7 +17,10 @@ namespace Lab2MPA.Data
         public DbSet<Lab2MPA.Models.Book> Book { get; set; } = default!;
         public DbSet<Lab2MPA.Models.Customer> Customer { get; set; } = default!;
         public DbSet<Lab2MPA.Models.Genre> Genre { get; set; } = default!;
+        public DbSet<Lab2MPA.Models.Order> Order { get; set; } = default!;
         public DbSet<Lab2MPA.Models.Author> Author { get; set; } = default!;
+        public DbSet<Publisher> Publisher { get; set; } = default!;
+        public DbSet<PublishedBook> PublishedBook { get; set; } = default!;
     }
 }
 

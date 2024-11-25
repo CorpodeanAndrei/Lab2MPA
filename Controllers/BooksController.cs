@@ -20,10 +20,21 @@ namespace Lab2MPA.Controllers
         }
 
         // GET: Books
-        public async Task<IActionResult> Index(string sortOrder, string searchString)
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
+            ViewData["CurrentSort"] = sortOrder;
             ViewData["TitleSortParm"] = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
             ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
             ViewData["CurrentFilter"] = searchString;
             var books = from b in _context.Book
                         join a in _context.Author on b.AuthorID equals a.ID
@@ -34,7 +45,7 @@ namespace Lab2MPA.Controllers
                             Price = b.Price,
                             FullName = a.FullName
                         };
-            //IQueryable<Book> books = _context.Book.Include(b => b.Author);
+
             if (!String.IsNullOrEmpty(searchString))
             {
                 books = books.Where(s => s.Title.Contains(searchString));
@@ -56,16 +67,8 @@ namespace Lab2MPA.Controllers
                     books = books.OrderBy(b => b.Title);
                     break;
             }
-            return View(await books.AsNoTracking().ToListAsync());
-            //var bookViewModels = await books.Select(b => new BookViewModel
-            //{
-            //    ID = b.ID,
-            //    Title = b.Title,
-            //    Price = b.Price,
-            //    FullName = b.Author.FirstName + " " + b.Author.LastName
-            //}).ToListAsync();
-
-            //return View(bookViewModels);
+            int pageSize = 2;
+            return View(await PaginatedList<BookViewModel>.CreateAsync(books.AsNoTracking(),pageNumber ?? 1, pageSize));
         }
 
         // GET: Books/Details/5
