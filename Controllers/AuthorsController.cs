@@ -54,7 +54,7 @@ namespace Lab2MPA.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,FirstName,LastName")] Author author)
+        public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,FullName")] Author author)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace Lab2MPA.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,FirstName,LastName")] Author author)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,FirstName,LastName,FullName")] Author author)
         {
             if (id != author.ID)
             {

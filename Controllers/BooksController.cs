@@ -20,10 +20,11 @@ namespace Lab2MPA.Controllers
         }
 
         // GET: Books
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
             ViewData["TitleSortParm"] = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
             ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
+            ViewData["CurrentFilter"] = searchString;
             var books = from b in _context.Book
                         join a in _context.Author on b.AuthorID equals a.ID
                         select new BookViewModel
@@ -31,13 +32,19 @@ namespace Lab2MPA.Controllers
                             ID = b.ID,
                             Title = b.Title,
                             Price = b.Price,
-                            FullName = a.FirstName + " " + a.LastName
+                            FullName = a.FullName
                         };
             //IQueryable<Book> books = _context.Book.Include(b => b.Author);
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                books = books.Where(s => s.Title.Contains(searchString));
+            }
+
             switch (sortOrder)
             {
                 case "title_desc":
                     books = books.OrderByDescending(b => b.Title);
+                    Console.WriteLine(books);
                     break;
                 case "Price":
                     books = books.OrderBy(b => b.Price);
@@ -70,15 +77,25 @@ namespace Lab2MPA.Controllers
             }
 
             var book = await _context.Book
-                 .Include(s => s.Orders)
-                 .ThenInclude(e => e.Customer)
-                 .AsNoTracking()
-                 .SingleOrDefaultAsync(m => m.ID == id);
+                .Include(b => b.Author)  // Include autorul, dar nu și cărțile acestuia
+                .Include(b => b.Orders)
+                    .ThenInclude(o => o.Customer)  // Include comenzile și clienții
+                .AsNoTracking()  // Nu urmări obiectele
+                .FirstOrDefaultAsync(b => b.ID == id);
 
             if (book == null)
             {
                 return NotFound();
             }
+
+            // Obține toate cărțile autorului separat
+            var authorBooks = await _context.Book
+                .Where(b => b.AuthorID == book.AuthorID)
+                .AsNoTracking()  // Continuă să folosești AsNoTracking dacă e necesar
+                .ToListAsync();
+
+            // Atribuie cărțile autorului la modelul de view
+            book.Author.Books = authorBooks;
 
             return View(book);
         }
@@ -86,11 +103,7 @@ namespace Lab2MPA.Controllers
         // GET: Books/Create
         public IActionResult Create()
         {
-            ViewData["AuthorID"] = new SelectList(_context.Author.Select(a => new
-            {
-                ID = a.ID,
-                FullName = a.FirstName + " " + a.LastName
-            }), "ID", "FullName");
+            ViewData["AuthorID"] = new SelectList(_context.Author, "ID", "FullName");
             ViewData["GenreID"] = new SelectList(_context.Genre, "ID", "Name");
             return View();
         }
@@ -100,7 +113,7 @@ namespace Lab2MPA.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Author,Price")] Book book)
+        public async Task<IActionResult> Create([Bind("Title,AuthorID,Price,GenreID")] Book book)
         {
             try
             {
@@ -114,9 +127,12 @@ namespace Lab2MPA.Controllers
             catch (DbUpdateException /* ex*/)
             {
 
-                ModelState.AddModelError("", "Unable to save changes. " +
-                "Try again, and if the problem persists ");
+                ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists ");
             }
+
+            ViewData["AuthorID"] = new SelectList(_context.Author, "ID", "FullName", book.AuthorID);
+            ViewData["GenreID"] = new SelectList(_context.Genre, "ID", "Name", book.GenreID);
+
             return View(book);
         }
 

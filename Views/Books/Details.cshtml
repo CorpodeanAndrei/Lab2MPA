@@ -9,33 +9,63 @@
 <div>
     <h4>Book</h4>
     <hr />
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.Price)
-    </dd>
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.Orders)
-    </dt>
-    <dd class="col-sm-10">
-        <table class="table">
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dt class="col-sm-2">
+            Author
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Author.FirstName) @Html.DisplayFor(model => model.Author.LastName)
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <h4>Other books by the same author:</h4>
+    <ul>
+        @foreach (var otherBook in Model.Author.Books)
+        {
+            <li>@otherBook.Title (@otherBook.Price.ToString("C"))</li>
+        }
+    </ul>
+</div>
+
+<div>
+    <h4>Orders</h4>
+    <table class="table">
+        <thead>
             <tr>
                 <th>Customer</th>
                 <th>Order Date</th>
             </tr>
-            @foreach (var item in Model.Orders)
+        </thead>
+        <tbody>
+            @foreach (var order in Model.Orders)
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Customer.Name)
+                        @order.Customer.Name
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.OrderDate)
+                        @order.OrderDate.ToShortDateString()
                     </td>
                 </tr>
             }
-        </table>
-    </dd>
-    </dl>
+        </tbody>
+    </table>
 </div>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
     <a asp-action="Index">Back to List</a>
