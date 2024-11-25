@@ -4,6 +4,7 @@ using Lab2MPA.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lab2MPA.Migrations
 {
     [DbContext(typeof(Lab2MPAContext))]
-    partial class Lab2MPAContextModelSnapshot : ModelSnapshot
+    [Migration("20241122181631_OrderModify")]
+    partial class OrderModify
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,7 +146,7 @@ namespace Lab2MPA.Migrations
             modelBuilder.Entity("Lab2MPA.Models.Book", b =>
                 {
                     b.HasOne("Lab2MPA.Models.Author", "Author")
-                        .WithMany("Books")
+                        .WithMany()
                         .HasForeignKey("AuthorID");
 
                     b.HasOne("Lab2MPA.Models.Genre", "Genre")
@@ -168,11 +171,6 @@ namespace Lab2MPA.Migrations
                     b.Navigation("Book");
 
                     b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("Lab2MPA.Models.Author", b =>
-                {
-                    b.Navigation("Books");
                 });
 
             modelBuilder.Entity("Lab2MPA.Models.Book", b =>

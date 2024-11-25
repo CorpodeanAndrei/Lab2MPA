@@ -32,9 +32,9 @@ namespace Lab2MPA.Data
                 );
 
                 context.Author.AddRange(
-                    new Author {ID=1, FirstName= "Mihail", LastName= "Sadoveanu" },
-                    new Author {ID = 2, FirstName = "George", LastName = "Calinescu" },
-                    new Author {ID = 3, FirstName = "Mircea", LastName = "Eliade" }
+                    new Author {ID=1, FirstName= "Mihail", LastName= "Sadoveanu"},
+                    new Author {ID = 2, FirstName = "George", LastName = "Calinescu"},
+                    new Author {ID = 3, FirstName = "Mircea", LastName = "Eliade"}
                 );
 
                 context.Customer.AddRange(

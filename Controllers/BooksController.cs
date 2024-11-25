@@ -20,10 +20,52 @@ namespace Lab2MPA.Controllers
         }
 
         // GET: Books
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
-            var lab2MPAContext = _context.Book.Include(b => b.Author).Include(b => b.Genre);
-            return View(await lab2MPAContext.ToListAsync());
+            ViewData["TitleSortParm"] = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
+            ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
+            ViewData["CurrentFilter"] = searchString;
+            var books = from b in _context.Book
+                        join a in _context.Author on b.AuthorID equals a.ID
+                        select new BookViewModel
+                        {
+                            ID = b.ID,
+                            Title = b.Title,
+                            Price = b.Price,
+                            FullName = a.FullName
+                        };
+            //IQueryable<Book> books = _context.Book.Include(b => b.Author);
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                books = books.Where(s => s.Title.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "title_desc":
+                    books = books.OrderByDescending(b => b.Title);
+                    Console.WriteLine(books);
+                    break;
+                case "Price":
+                    books = books.OrderBy(b => b.Price);
+                    break;
+                case "price_desc":
+                    books = books.OrderByDescending(b => b.Price);
+                    break;
+                default:
+                    books = books.OrderBy(b => b.Title);
+                    break;
+            }
+            return View(await books.AsNoTracking().ToListAsync());
+            //var bookViewModels = await books.Select(b => new BookViewModel
+            //{
+            //    ID = b.ID,
+            //    Title = b.Title,
+            //    Price = b.Price,
+            //    FullName = b.Author.FirstName + " " + b.Author.LastName
+            //}).ToListAsync();
+
+            //return View(bookViewModels);
         }
 
         // GET: Books/Details/5
@@ -35,13 +77,25 @@ namespace Lab2MPA.Controllers
             }
 
             var book = await _context.Book
-                .Include(b => b.Author)
-                .Include(b => b.Genre)
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .Include(b => b.Author)  // Include autorul, dar nu și cărțile acestuia
+                .Include(b => b.Orders)
+                    .ThenInclude(o => o.Customer)  // Include comenzile și clienții
+                .AsNoTracking()  // Nu urmări obiectele
+                .FirstOrDefaultAsync(b => b.ID == id);
+
             if (book == null)
             {
                 return NotFound();
             }
+
+            // Obține toate cărțile autorului separat
+            var authorBooks = await _context.Book
+                .Where(b => b.AuthorID == book.AuthorID)
+                .AsNoTracking()  // Continuă să folosești AsNoTracking dacă e necesar
+                .ToListAsync();
+
+            // Atribuie cărțile autorului la modelul de view
+            book.Author.Books = authorBooks;
 
             return View(book);
         }
@@ -49,11 +103,7 @@ namespace Lab2MPA.Controllers
         // GET: Books/Create
         public IActionResult Create()
         {
-            ViewData["AuthorID"] = new SelectList(_context.Author.Select(a => new
-            {
-                ID = a.ID,
-                FullName = a.FirstName + " " + a.LastName
-            }), "ID", "FullName");
+            ViewData["AuthorID"] = new SelectList(_context.Author, "ID", "FullName");
             ViewData["GenreID"] = new SelectList(_context.Genre, "ID", "Name");
             return View();
         }
@@ -63,16 +113,26 @@ namespace Lab2MPA.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Title,Price,GenreID,AuthorID")] Book book)
+        public async Task<IActionResult> Create([Bind("Title,AuthorID,Price,GenreID")] Book book)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(book);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(book);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            ViewData["AuthorID"] = new SelectList(_context.Author, "ID", "FirstName", book.AuthorID);
+            catch (DbUpdateException /* ex*/)
+            {
+
+                ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists ");
+            }
+
+            ViewData["AuthorID"] = new SelectList(_context.Author, "ID", "FullName", book.AuthorID);
             ViewData["GenreID"] = new SelectList(_context.Genre, "ID", "Name", book.GenreID);
+
             return View(book);
         }
 
@@ -103,44 +163,33 @@ namespace Lab2MPA.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Title,Price,GenreID,AuthorID")] Book book)
+        public async Task<IActionResult> EditPost(int? id)
         {
-            if (id != book.ID)
+            if (id == null)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            var bookToUpdate = await _context.Book.FirstOrDefaultAsync(s => s.ID == id);
+            if (await TryUpdateModelAsync<Book>(bookToUpdate, "",  s => s.AuthorID, s => s.Title, s => s.Price))
             {
                 try
                 {
-                    _context.Update(book);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateException /* ex */)
                 {
-                    if (!BookExists(book.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists");
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["AuthorID"] = new SelectList(_context.Author.Select(a => new
-            {
-                ID = a.ID,
-                FullName = a.FirstName + " " + a.LastName
-            }), "ID", "FullName", book.AuthorID);
-            ViewData["GenreID"] = new SelectList(_context.Genre, "ID", "Name", book.GenreID);
-            return View(book);
+            ViewData["AuthorID"] = new SelectList(_context.Author, "ID", "FullName",
+           bookToUpdate.AuthorID);
+            return View(bookToUpdate);
         }
 
         // GET: Books/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
             if (id == null)
             {
@@ -149,11 +198,16 @@ namespace Lab2MPA.Controllers
 
             var book = await _context.Book
                 .Include(b => b.Author)
-                .Include(b => b.Genre)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (book == null)
             {
                 return NotFound();
+            }
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewData["ErrorMessage"] =
+                "Delete failed. Try again";
             }
 
             return View(book);
@@ -170,8 +224,22 @@ namespace Lab2MPA.Controllers
                 _context.Book.Remove(book);
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            if (book == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                _context.Book.Remove(book);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException /* ex */)
+            {
+
+                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+            }
         }
 
         private bool BookExists(int id)
