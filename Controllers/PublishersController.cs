@@ -111,17 +111,30 @@ namespace Lab2MPA.Controllers
             {
                 return NotFound();
             }
+
             var publisher = await _context.Publisher
-            .Include(i => i.PublishedBooks).ThenInclude(i => i.Book)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(m => m.ID == id);
+                .Include(p => p.PublishedBooks)
+                .ThenInclude(pb => pb.Book)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.ID == id);
+
             if (publisher == null)
             {
                 return NotFound();
             }
-            PopulatePublishedBookData(publisher);
-            return View(publisher);
 
+            // Obține toate cărțile și marchează cele deja publicate
+            var allBooks = await _context.Book.ToListAsync();
+            var publishedBookIDs = publisher.PublishedBooks?.Select(pb => pb.BookID).ToHashSet() ?? new HashSet<int>();
+
+            ViewBag.Books = allBooks.Select(book => new Models.LibraryViewModels.PublishedBookData
+            {
+                BookID = book.ID,
+                Title = book.Title,
+                IsPublished = publishedBookIDs.Contains(book.ID)
+            }).ToList();
+
+            return View(publisher);
         }
         private void PopulatePublishedBookData(Publisher publisher)
         {
@@ -145,21 +158,25 @@ namespace Lab2MPA.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, string[] selectedBooks)
+        public async Task<IActionResult> EditPost(int? id, string[] selectedBooks)
         {
             if (id == null)
             {
                 return NotFound();
             }
             var publisherToUpdate = await _context.Publisher
-            .Include(i => i.PublishedBooks)
-            .ThenInclude(i => i.Book)
-            .FirstOrDefaultAsync(m => m.ID == id);
-            if (await TryUpdateModelAsync<Publisher>(
-            publisherToUpdate,
-            "",
-            i => i.PublisherName, i => i.Adress))
+                .Include(i => i.PublishedBooks)
+                .ThenInclude(i => i.Book)
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            Console.WriteLine("Urmeaza publisherToUpdate");
+            Console.WriteLine(publisherToUpdate);
+
+            if (await TryUpdateModelAsync<Publisher>( publisherToUpdate, "", i => i.PublisherName, i => i.Adress))
             {
+                Console.WriteLine("Urmeaza publisherToUpdate2");
+                Console.WriteLine(publisherToUpdate);
+
                 UpdatePublishedBooks(selectedBooks, publisherToUpdate);
                 try
                 {
@@ -168,11 +185,11 @@ namespace Lab2MPA.Controllers
                 catch (DbUpdateException /* ex */)
                 {
 
-                    ModelState.AddModelError("", "Unable to save changes. " +
-                    "Try again, and if the problem persists, ");
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists, ");
                 }
                 return RedirectToAction(nameof(Index));
             }
+            Console.WriteLine("A mers?");
             UpdatePublishedBooks(selectedBooks, publisherToUpdate);
             PopulatePublishedBookData(publisherToUpdate);
             return View(publisherToUpdate);
@@ -199,9 +216,12 @@ namespace Lab2MPA.Controllers
                     {
                         publisherToUpdate.PublishedBooks.Add(new PublishedBook
                         {
-                            PublisherID =publisherToUpdate.ID,
+                            PublisherID = publisherToUpdate.ID,
                             BookID = book.ID
                         });
+
+                        Console.WriteLine("Urmeaza publisherToUpdate3");
+                        Console.WriteLine(publisherToUpdate.PublisherName);
                     }
                 }
                 else

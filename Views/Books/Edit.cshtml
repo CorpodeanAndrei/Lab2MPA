@@ -38,7 +38,7 @@
                     <table>
                         <tr>
                             @{ int cnt = 0;
-                            List<Lab2MPA.Models.LibraryViewModels.PublishedBookData> books = ViewBag.Books;
+                            var books = ViewBag.Books as List<Lab2MPA.Models.LibraryViewModels.PublishedBookData> ?? new List<Lab2MPA.Models.LibraryViewModels.PublishedBookData>();
                             foreach (var book in books)
                             {
                                 if (cnt++ % 3 == 0)
@@ -46,9 +46,7 @@
                                     @:</tr><tr>
                                 }
                                 @:<td>
-                                <input type="checkbox" name="selectedBooks" value="@book.BookID"
-                                @(Html.Raw(book.IsPublished ? "checked=\"checked\"" : "")) />
-                                @book.BookID @: @book.Title
+                                <input type="checkbox" name="selectedBooks" value="@book.BookID" @(Html.Raw(book.IsPublished ? "checked=\"checked\"" : "")) /> @book.BookID @: @book.Title
                                 @:</td>
                             }
                         @:</tr>

@@ -1,17 +1,16 @@
 ﻿@model Lab2MPA.Models.Publisher
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Publisher";
 }
 
-<h1>Edit</h1>
+<h1>Edit Publisher</h1>
 
 <h4>Publisher</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="EditPost">
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
                 <label asp-for="PublisherName" class="control-label"></label>
@@ -24,12 +23,33 @@
                 <span asp-validation-for="Adress" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <h4>Books Published by this Publisher</h4>
+                <table>
+                    <tr>
+                        @{
+                            int cnt = 0;
+                            List<Lab2MPA.Models.LibraryViewModels.PublishedBookData> books = ViewBag.Books;
+                            foreach (var book in books)
+                            {
+                                if (cnt++ % 3 == 0)
+                                {
+                                    @:</tr><tr>
+                                }
+                                @:<td>
+                                <input type="checkbox" name="selectedBooks" value="@book.BookID" @(book.IsPublished ? "checked=\"checked\"" : "") />
+                                @book.Title
+                                @:</td>
+                            }
+                        }
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
-
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
