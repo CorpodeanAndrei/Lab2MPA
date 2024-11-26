@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Lab2MPA</title>
+    <title>@ViewData["Title"] - My Library</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Lab2MPA.styles.css" asp-append-version="true" />
@@ -14,6 +14,7 @@
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Books" asp-action="Index">Books</a>
                 <a class="navbar-brand" asp-area="" asp-controller="Authors" asp-action="Index">Authors</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">My Library</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -24,8 +25,10 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Publishers" asp-action="Index">Publishers</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Statistics">Statistics</a>
                     </ul>
                 </div>
             </div>
