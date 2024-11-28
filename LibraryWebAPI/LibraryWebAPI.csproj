@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,18 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="LibraryModel\**" />
-    <Compile Remove="LibraryWebAPI\**" />
-    <Content Remove="LibraryModel\**" />
-    <Content Remove="LibraryWebAPI\**" />
-    <EmbeddedResource Remove="LibraryModel\**" />
-    <EmbeddedResource Remove="LibraryWebAPI\**" />
-    <None Remove="LibraryModel\**" />
-    <None Remove="LibraryWebAPI\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -28,7 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="LibraryModel\LibraryModel.csproj" />
+    <ProjectReference Include="..\Lab2MPA.csproj" />
+    <ProjectReference Include="..\LibraryModel\LibraryModel.csproj" />
   </ItemGroup>
 
 </Project>

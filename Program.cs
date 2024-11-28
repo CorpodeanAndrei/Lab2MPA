@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Lab2MPA.Data;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<Lab2MPAContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Lab2MPAContext") ?? throw new InvalidOperationException("Connection string 'Lab2MPAContext' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'Lab2MPAContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

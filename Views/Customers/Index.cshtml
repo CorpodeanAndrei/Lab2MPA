@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Lab2MPA.Models.Customer>
+
+@{
+    ViewData["Title"] = "Customers";
+}
+
+<h1>Customers</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+	<thead>
+		<tr>
+			<th>Customer Name</th>
+			<th>Adress</th>
+			<th>BirthDate</th>
+			<th>City</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			string selectedRow = "";
+			if (item.CustomerID == (int?)ViewData["CustomerID"])
+			{
+				selectedRow = "success";
+			}
+			<tr class="@selectedRow">
+				<td>
+					@Html.DisplayFor(modelItem => item.Name)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Adress)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.BirthDate)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.City.CityName)
+				</td>
+				<td>
+					<a asp-action="Index" asp-route-id="@item.CustomerID">Select</a> |
+					<a asp-action="Edit" asp-route-id="@item.CustomerID">Edit</a> |
+					<a asp-action="Details" asp-route-id="@item.CustomerID">Details</a> |
+					<a asp-action="Delete" asp-route-id="@item.CustomerID">Delete</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
