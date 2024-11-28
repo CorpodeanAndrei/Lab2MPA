@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Lab2MPA.Models;
+using LibraryModel.Models;
 
 namespace Lab2MPA.Data
 {
@@ -67,6 +68,19 @@ namespace Lab2MPA.Data
                 foreach (Order e in orders)
                 {
                     context.Order.Add(e);
+                }
+
+                context.SaveChanges();
+                var cities = new City[]
+                {
+                    new City{Id=1, CityName="Cluj-Napoca"},
+                    new City{Id=2, CityName="Bucuresti"},
+                    new City{Id=3, CityName="Oradea"}
+                };
+
+                foreach (City ci in cities)
+                {
+                    context.City.Add(ci);
                 }
 
                 context.SaveChanges();
