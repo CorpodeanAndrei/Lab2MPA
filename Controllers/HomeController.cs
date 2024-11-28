@@ -17,6 +17,10 @@ namespace Lab2MPA.Controllers
             _context = context;
             _logger = logger;
         }
+        public IActionResult Chat()
+        {
+            return View();
+        }
 
         public async Task<ActionResult> Statistics()
         {
