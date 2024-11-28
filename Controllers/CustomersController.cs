@@ -58,16 +58,28 @@ namespace Lab2MPA.Controllers
         // GET: Customers/Create
         public async Task<IActionResult> Create()
         {
-            ViewBag.Cities = new SelectList(await _context.City.ToListAsync(), "Id", "City");
+            ViewBag.Cities = new SelectList(await _context.City.ToListAsync(), "Id", "CityName");
             return View();
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind("CustomerID,Name,Adress,BirthDate,City")] Customer customer)
+        public async Task<ActionResult> Create([Bind("CustomerID,Name,Adress,BirthDate,CityID")] Customer customer)
         {
-            if (!ModelState.IsValid) return View(customer);
+            if (!ModelState.IsValid)
+            {
+                // Debugging: Loghează erorile din ModelState
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine($"Validation error: {error.ErrorMessage}");
+                }
+
+                // Reîncarcă lista orașelor
+                ViewBag.Cities = new SelectList(await _context.City.ToListAsync(), "Id", "CityName");
+
+                return View(customer);
+            }
             try
             {
                 var client = new HttpClient();
@@ -83,6 +95,7 @@ namespace Lab2MPA.Controllers
             {
                 ModelState.AddModelError(string.Empty, $"Unable to create record: { ex.Message} ");
             }
+            ViewBag.Cities = new SelectList(await _context.City.ToListAsync(), "Id", "CityName");
             return View(customer);
         }
 
@@ -98,6 +111,8 @@ namespace Lab2MPA.Controllers
             {
                 var customer = JsonConvert.DeserializeObject<Customer>(
                 await response.Content.ReadAsStringAsync());
+
+                ViewBag.Cities = new SelectList(await _context.City.ToListAsync(), "Id", "CityName", customer.CityID);
                 return View(customer);
             }
             return new NotFoundResult();
@@ -105,9 +120,14 @@ namespace Lab2MPA.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind("CustomerID,Name,Adress,BirthDate,City")] Customer customer)
+        public async Task<ActionResult> Edit([Bind("CustomerID,Name,Adress,BirthDate,CityID")] Customer customer)
         {
-            if (!ModelState.IsValid) return View(customer);
+            if (!ModelState.IsValid)
+            {
+                // Reîncarcă lista orașelor dacă sunt erori de validare
+                ViewBag.Cities = new SelectList(await _context.City.ToListAsync(), "Id", "CityName", customer.CityID);
+                return View(customer);
+            }
             var client = new HttpClient();
             string json = JsonConvert.SerializeObject(customer);
             var response = await client.PutAsync($"{_baseUrl}/{customer.CustomerID}",
@@ -116,6 +136,7 @@ namespace Lab2MPA.Controllers
             {
                 return RedirectToAction("Index");
             }
+            ViewBag.Cities = new SelectList(await _context.City.ToListAsync(), "Id", "CityName", customer.CityID);
             return View(customer);
         }
         public async Task<ActionResult> Delete(int? id)
