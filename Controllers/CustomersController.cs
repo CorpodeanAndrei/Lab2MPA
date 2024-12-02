@@ -9,9 +9,11 @@ using Lab2MPA.Data;
 using Lab2MPA.Models;
 using Newtonsoft.Json;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Lab2MPA.Controllers
 {
+    [Authorize(Policy = "SalesManager")]
     public class CustomersController : Controller
     {
         private readonly Lab2MPAContext _context;

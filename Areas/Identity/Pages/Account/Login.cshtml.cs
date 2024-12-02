@@ -106,6 +106,8 @@ namespace Lab2MPA.Areas.Identity.Pages.Account
             returnUrl ??= Url.Content("~/");
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            _logger.LogInformation("Redirecting to {ReturnUrl}", returnUrl);
+
 
             if (ModelState.IsValid)
             {

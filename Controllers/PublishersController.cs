@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Lab2MPA.Data;
 using Lab2MPA.Models;
 using Lab2MPA.Models.LibraryViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Lab2MPA.Controllers
 {
+    [Authorize(Policy = "OnlySales")]
     public class PublishersController : Controller
     {
         private readonly Lab2MPAContext _context;

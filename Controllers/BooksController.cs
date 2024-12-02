@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lab2MPA.Data;
 using Lab2MPA.Models;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace Lab2MPA.Controllers
 {
+    [Authorize(Roles = "Employee")]
     public class BooksController : Controller
     {
         private readonly Lab2MPAContext _context;
@@ -20,6 +23,7 @@ namespace Lab2MPA.Controllers
         }
 
         // GET: Books
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
@@ -72,6 +76,7 @@ namespace Lab2MPA.Controllers
         }
 
         // GET: Books/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
