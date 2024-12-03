@@ -1,4 +1,6 @@
-﻿namespace Lab2MPA.Models.LibraryViewModels
+﻿using LibraryModel.Models;
+
+namespace Lab2MPA.Models.LibraryViewModels
 {
     public class PublisherIndexData
     {

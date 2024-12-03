@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Lab2MPA.Models;
 using LibraryModel.Models;
+using LibraryModel.Data;
 
 namespace Lab2MPA.Data
 {

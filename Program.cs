@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using LibraryModel.Data;
 using Lab2MPA.Data;
 using Lab2MPA.Hubs;
 using Microsoft.AspNetCore.Identity;

@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Lab2MPA.Data;
+using LibraryModel.Data;
 using Lab2MPA.Models;
+using LibraryModel.Models;
 
 namespace LibraryWebAPI.Controllers
 {

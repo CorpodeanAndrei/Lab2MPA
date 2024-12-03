@@ -1,4 +1,6 @@
-﻿namespace Lab2MPA.Models
+﻿using LibraryModel.Models;
+
+namespace Lab2MPA.Models
 {
     public class Order
     {

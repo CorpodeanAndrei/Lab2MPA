@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Lab2MPA.Data;
+using LibraryModel.Data;
 using Lab2MPA.Models;
 using Lab2MPA.Models.LibraryViewModels;
 using Microsoft.AspNetCore.Authorization;

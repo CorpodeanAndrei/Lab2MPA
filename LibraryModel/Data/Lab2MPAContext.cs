@@ -8,7 +8,7 @@ using LibraryModel.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-namespace Lab2MPA.Data
+namespace LibraryModel.Data
 {
     public class Lab2MPAContext : IdentityDbContext<IdentityUser>
     {
@@ -16,11 +16,11 @@ namespace Lab2MPA.Data
         {
         }
 
-        public DbSet<Lab2MPA.Models.Book> Book { get; set; } = default!;
+        public DbSet<Book> Book { get; set; } = default!;
         //public DbSet<Lab2MPA.Models.Customer> Customer { get; set; } = default!;
-        public DbSet<Lab2MPA.Models.Genre> Genre { get; set; } = default!;
-        public DbSet<Lab2MPA.Models.Order> Order { get; set; } = default!;
-        public DbSet<Lab2MPA.Models.Author> Author { get; set; } = default!;
+        public DbSet<Genre> Genre { get; set; } = default!;
+        public DbSet<Order> Order { get; set; } = default!;
+        public DbSet<Author> Author { get; set; } = default!;
         public DbSet<City> City { get; set; }
         public DbSet<Customer> Customer { get; set; }
         public DbSet<IdentityUser> User { get; set; } = default!;

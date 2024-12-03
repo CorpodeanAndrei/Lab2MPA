@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryModel", "LibraryMode
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryWebAPI", "LibraryWebAPI\LibraryWebAPI.csproj", "{A3B22665-7542-413B-8DB7-BAB5D1213606}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcCustomersService", "GrpcCustomersService\GrpcCustomersService.csproj", "{174F5AA9-58E2-4B30-ACD5-E12FDAEE1086}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "helps", "..\helps\helps.csproj", "{EBC4AF03-AE8C-4CE9-9F99-EA48513C7B31}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{A3B22665-7542-413B-8DB7-BAB5D1213606}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3B22665-7542-413B-8DB7-BAB5D1213606}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3B22665-7542-413B-8DB7-BAB5D1213606}.Release|Any CPU.Build.0 = Release|Any CPU
+		{174F5AA9-58E2-4B30-ACD5-E12FDAEE1086}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{174F5AA9-58E2-4B30-ACD5-E12FDAEE1086}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{174F5AA9-58E2-4B30-ACD5-E12FDAEE1086}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{174F5AA9-58E2-4B30-ACD5-E12FDAEE1086}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBC4AF03-AE8C-4CE9-9F99-EA48513C7B31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBC4AF03-AE8C-4CE9-9F99-EA48513C7B31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBC4AF03-AE8C-4CE9-9F99-EA48513C7B31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBC4AF03-AE8C-4CE9-9F99-EA48513C7B31}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

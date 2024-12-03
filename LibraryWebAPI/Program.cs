@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Lab2MPA.Data;
+using LibraryModel.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

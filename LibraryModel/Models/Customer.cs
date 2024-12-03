@@ -1,6 +1,6 @@
-﻿using LibraryModel.Models;
+﻿using Lab2MPA.Models;
 
-namespace Lab2MPA.Models
+namespace LibraryModel.Models
 {
     public class Customer
     {
