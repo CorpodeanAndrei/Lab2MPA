@@ -74,25 +74,28 @@ namespace GrpcCustomersService.Services
             //}
         }
 
-        public override Task<Customer> Get(CustomerId request, ServerCallContext context)
+        public override Task<Customer> Get(CustomerId requestData, ServerCallContext context)
         {
-            var customer = db.Customer
-                .Where(c => c.CustomerID == request.Id)
-                .Select(c => new Customer
-                {
-                    CustomerId = c.CustomerID,
-                    Name = c.Name,
-                    Adress = c.Adress,
-                    Birthdate = c.BirthDate.HasValue ? c.BirthDate.Value.ToString("yyyy-MM-dd") : null
-                })
-                .FirstOrDefault();
+            var data = db.Customer.Find(requestData.Id);
 
-            if (customer == null)
+            Customer emp = new Customer()
             {
-                throw new RpcException(new Status(StatusCode.NotFound, "Customer not found"));
-            }
+                CustomerId = data.CustomerID,
+                Name = data.Name,
+                Adress = data.Adress
 
-            return Task.FromResult(customer);
+            };
+            return Task.FromResult(emp);
+        }
+
+        public override Task<Empty> Delete(CustomerId requestData, ServerCallContext
+       context)
+        {
+            var data = db.Customer.Find(requestData.Id);
+            db.Customer.Remove(data);
+
+            db.SaveChanges();
+            return Task.FromResult(new Empty());
         }
 
         public override Task<Customer> Update(Customer request, ServerCallContext context)
@@ -112,20 +115,6 @@ namespace GrpcCustomersService.Services
 
             db.SaveChanges();
             return Task.FromResult(request);
-        }
-
-        public override Task<Empty> Delete(CustomerId request, ServerCallContext context)
-        {
-            var customer = db.Customer.FirstOrDefault(c => c.CustomerID == request.Id);
-
-            if (customer == null)
-            {
-                throw new RpcException(new Status(StatusCode.NotFound, "Customer not found"));
-            }
-
-            db.Customer.Remove(customer);
-            db.SaveChanges();
-            return Task.FromResult(new Empty());
         }
 
 

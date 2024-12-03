@@ -105,19 +105,28 @@ namespace Lab2MPA.Controllers
             return View(customer);
         }
 
-        [HttpGet]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(int? id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
             var client = new CustomerService.CustomerServiceClient(channel);
-            var customer = client.Get(new CustomerId { Id = id });
+            Customer customer = client.Get(new CustomerId() { Id = (int)id });
+            if (customer == null)
+            {
+                return NotFound();
+            }
             return View(customer);
         }
-
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
             var client = new CustomerService.CustomerServiceClient(channel);
-            client.Delete(new CustomerId { Id = id });
+            Empty response = client.Delete(new CustomerId()
+            {
+                Id = id
+            });
             return RedirectToAction(nameof(Index));
         }
 
