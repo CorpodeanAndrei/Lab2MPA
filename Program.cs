@@ -4,6 +4,7 @@ using LibraryModel.Data;
 using Lab2MPA.Data;
 using Lab2MPA.Hubs;
 using Microsoft.AspNetCore.Identity;
+using Lab2MPA;
 
 
 var builder = WebApplication.CreateBuilder(args);
