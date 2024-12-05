@@ -5,6 +5,7 @@ using Lab2MPA.Data;
 using Lab2MPA.Hubs;
 using Microsoft.AspNetCore.Identity;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<Lab2MPAContext>(options =>
@@ -65,6 +66,7 @@ builder.Services.ConfigureApplicationCookie(opts =>
 
 builder.Services.AddSignalR();
 builder.Services.AddRazorPages();
+builder.Services.AddSingleton<PresenceTracker>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -97,6 +99,8 @@ app.UseAuthentication();
 
 
 app.MapHub<ChatHub>("/Chat");
+app.MapHub<NotificationHub>("/Notification");
+
 app.MapRazorPages();
 
 app.MapControllerRoute(

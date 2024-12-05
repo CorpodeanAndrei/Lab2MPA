@@ -22,6 +22,11 @@ namespace Lab2MPA.Controllers
             return View();
         }
 
+        public IActionResult Notification()
+        {
+            return View();
+        }
+
         public async Task<ActionResult> Statistics()
         {
             IQueryable<OrderGroup> data =
